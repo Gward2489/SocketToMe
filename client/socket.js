@@ -6,9 +6,7 @@ const closeSocket = document.getElementById("closeSocket")
 let connectionUrl = "localhost:5000"
 let socket;
 
-var scheme = document.location.protocol == "https:" ? "wss" : "ws"
-
-var port = document.location.port ? (":" + document.location.port) : ""
+let scheme = document.location.protocol == "https:" ? "wss" : "ws"
 
 connectionUrl = scheme + "://" + "localhost:5000" + "/ws"
 
