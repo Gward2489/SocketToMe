@@ -12,7 +12,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using server.SocketFunctions;
-using server.SocketModules;
 
 namespace server
 {
@@ -56,9 +55,8 @@ namespace server
                 {
                     if (context.WebSockets.IsWebSocketRequest)
                     {
-                        MakeSocket socket = new MakeSocket();
-                        Echo echo = new Echo();
-                        socket.makeSocketAsync(context);
+                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
+                        await Echo.EchoMessage(context, webSocket);
                     }
                     else
                     {

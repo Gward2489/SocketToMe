@@ -8,7 +8,7 @@ namespace server.SocketFunctions
 {
     public class Echo
     {
-        public async Task EchoMessage(HttpContext context, WebSocket webSocket)
+        public static async Task EchoMessage(HttpContext context, WebSocket webSocket)
         {
             var buffer = new byte[1024 * 4];
             WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
