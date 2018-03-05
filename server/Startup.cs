@@ -13,64 +13,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using server.SocketFunctions;
 
+using WebSocketManager;
+
 namespace server
 {
-    public class Startup 
+    public class Startup
     {
-        public void ConfigureServices(IServiceCollection services)
+        public void Configure(IApplicationBuilder app, IServiceProvider serviceProvider)
         {
+            app.UseWebSockets();
+
+            app.MapWebSocketManager("/ws", serviceProvider.GetService<ChatMessageHandler>());
+
+            app.UseStaticFiles();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void ConfigureServices(IServiceCollection services)
         {
-            loggerFactory.AddConsole(LogLevel.Debug);
-            loggerFactory.AddDebug(LogLevel.Debug);
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
-#if NoOptions
-            #region UseWebSockets
-            app.UseWebSockets();
-            #endregion
-#endif
-
-#if UseOptions
-            #region UseWebSocketsOptions
-            var webSocketOptions = new WebSocketOptions()
-            {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 4 * 1024
-            };
-            app.UseWebSockets(webSocketOptions);
-            #endregion
-#endif
-
-            #region AcceptWebSocket
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.Path == "/ws")
-                {
-                    if (context.WebSockets.IsWebSocketRequest)
-                    {
-                        WebSocket webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                        await Echo.EchoMessage(context, webSocket);
-                    }
-                    else
-                    {
-                        context.Response.StatusCode = 400;
-                    }
-                }
-                else
-                {
-                    await next();
-                }
-
-            });
-            #endregion
-            app.UseFileServer();
+            services.AddWebSocketManager();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace server.WebSocketManager
+namespace WebSocketManager
 {
     public abstract class WebSocketHandler
     {
